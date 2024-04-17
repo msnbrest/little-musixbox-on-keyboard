@@ -1,0 +1,133 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>musicbox</title>
+<style>body{font-family:sans-serif;background:#222;color:#ccc;margin:0;}
+div{position:relative;}
+.tac{text-align:center;}
+#keys{display:flex;flex-wrap:wrap;}
+.tile{width:2em;height:5em;text-align:center;line-height:2em;background:#333;box-shadow:0 0 0 1px #666 inset}
+.ping{animation:ping 2s linear;}
+@keyframes ping{from{background:#099;}to{background:#333;}}
+</style><script>
+//by https://freesound.org/people/UbikPhonik/packs/11206/
+//allsoundz120 (Freesound - 4 by ProjectsU012, 1 2 3 5 by cabled_mess, 6 by LaFeteParFete)
+
+const _sel= sel=> document.querySelector(sel),
+
+_sels= sel=> document.querySelectorAll(sel),
+
+kd= event=>{ event.keyCode==undefined || kb.is[event.keyCode] ||( kb.is[event.keyCode]= true, kb.f(event.keyCode) ); },
+
+ku= event=>{ event.keyCode==undefined ||( kb.is[event.keyCode]= false ); },
+
+map_ordr_kb_div= vv=> `<div class='tile' id='k_${ vv }'>${ kb.id_to_fr(vv) }</div>`,
+
+
+
+players= {
+
+	sons: [
+	{ src:"musicbox_5s.ogg", loop:0, pos:4.99, end:9.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:9.99, end:14.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:14.99, end:19.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:19.99, end:24.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:24.99, end:29.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:29.99, end:34.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:34.99, end:39.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:39.99, end:44.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:44.99, end:49.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:49.99, end:54.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:54.99, end:59.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:59.99, end:64.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:64.99, end:69.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:69.99, end:74.5 },
+	{ src:"musicbox_5s.ogg", loop:0, pos:74.99, end:79.5 },
+	],
+
+	play: code=>{
+		let ind= kb.ind_of[code].reac;
+		if(ind==null){
+			for(const elem of _sels("audio")){
+				elem.pause();
+			}
+		}else if(ind>-1){
+			let audio= null;
+			for(const elem of _sels("audio")){
+				if( elem.paused ){ audio= elem; break; }
+			}
+			if( !audio ){ audio= document.createElement('audio'); audio.src= players.sons[ind].src; }
+			audio.loop= players.sons[ind].loop;
+			audio.currentTime= players.sons[ind].pos;
+			audio.play();
+			setTimeout( _=>{ audio.pause(); }, (players.sons[ind].end-players.sons[ind].pos)*1000 );
+			_sel("body").appendChild(audio);
+			_sel("#k_"+code).classList.remove("ping");
+			setTimeout( _=>{ _sel("#k_"+code).classList.add("ping"); } ,30 );
+		}
+	}
+},
+
+
+
+kb= {
+
+	f: code=>{
+		(code in kb.ind_of) &&( players.play(code) );
+	},
+
+	is: {},
+
+	id_to_fr: id=> (id in kb.ind_of)? kb.ind_of[id].fr: ".",
+
+	ind_of: {
+	65:{ordr:1,reac:0,fr:"A"}, //son1 a SOL# | do
+	90:{ordr:2,reac:1,fr:"Z"}, //son2 z LA# | re
+	69:{ordr:3,reac:2,fr:"E"}, //son3 e DO | mi
+	82:{ordr:4,reac:3,fr:"R"}, //son4 r DO# | fa
+	84:{ordr:5,reac:4,fr:"T"}, //son5 t RE# | sol
+	89:{ordr:6,reac:5,fr:"Y"}, //son6 y FA | la
+	85:{ordr:7,reac:6,fr:"U"}, //son7 u SOL | si
+	73:{ordr:8,reac:7,fr:"I"}, //son8 i SOL# | do
+	79:{ordr:9,reac:8,fr:"O"}, //son9 o LA# | re
+	80:{ordr:10,reac:9,fr:"P"}, //son10 p DO# | mi
+	81:{ordr:11,reac:10,fr:"Q"}, //son11 q DO# | fa
+	83:{ordr:12,reac:11,fr:"S"}, //son12 s RE# | sol
+	68:{ordr:13,reac:12,fr:"D"}, //son13 d FA | la
+	70:{ordr:14,reac:13,fr:"F"}, //son14 f SOL | si
+	71:{ordr:15,reac:14,fr:"G"}, //son15 g SOL# | do
+	96:{ordr:40,reac:null,fr:"N.0"} // stop all
+	}
+},
+
+
+
+partition=[-1
+
+// comptine:
+//-1,9,9,11,-1,7,9,9,-1,11,-1,7,-1,9,11,14,-1,13,-1,-1,12,12,-1,11,-1,8,9,10,-1,8,-1,8,9,10,-1,-1,-1,8,10,13,12,11,-1,13,-1,14,-1,-1,-1,7,7,14,-1,-1,12,10,-1,11,-1,-1,9,7,-1,10,-1,11,-1,12,-1,11,-1,-1,7,7,-1,14,-1,-1,-1,12,10,11,-1,-1,9,7,-1,10,-1,11,10,9,-1,8,-1,7
+
+// GLACE A L'EAU: sol do mi ré la - si do si do si do la -et- fa mi la sol
+//-1,7,9,8,5,5,-1,-1,-1,-1,-1,-1,-1,4,-1,6,7,6,7,6,7,5,-1,-1,-1,-1,-1,-1,-1,2
+],
+
+
+
+// TODO replay & partition : players.play(partition[cur])
+
+init= _=>{
+
+	window.addEventListener("keydown",kd,0);
+	window.addEventListener("keyup",ku,0);
+	_sel("#keys").innerHTML= ordr_kb_ind_of().map( vv=> map_ordr_kb_div(vv) ).join("");
+},
+
+
+ordr_kb_ind_of= _=>{
+
+	let list= Object.keys(kb.ind_of).map(vv=>[vv,kb.ind_of[vv].ordr]);
+	list.sort((a,b)=>a[1]-b[1]);
+	return list.map(vv=>vv[0]);
+};
+
+</script></head><body onload="init()">
+<div id="keys"></div>
+</body></html>
